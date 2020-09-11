@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "elevator.h"
 
 Elevator *create_elevator(int capacity, int currentFloor, PersonList *persons){
@@ -6,8 +7,9 @@ Elevator *create_elevator(int capacity, int currentFloor, PersonList *persons){
             e->capacity=capacity;
             e->currentFloor=currentFloor;
             e->persons=persons;
-            e->targetFloor=NULL;
-}
+            e->targetFloor=0;
+            return e;
+        }
 
 Building *create_building(int nbFloor, Elevator *elevator, PersonList **waitingLists){
     Building* b=(Building*)malloc(sizeof(Building));
@@ -17,22 +19,25 @@ Building *create_building(int nbFloor, Elevator *elevator, PersonList **waitingL
     return b;
 }
 
-Profondeur(PersonList *persons){
+int Profondeur(PersonList *persons){
     int j=0;
     PersonList* p=persons;
     while (p!=NULL){
         j++;
-        p= p.next;
+        p= p->next;
     }
     return j;
 }
 
 PersonList* exitElevator(Elevator *e){
     PersonList* L=NULL;
-    int j=Profondeur(e.persons);
+    int j=Profondeur(e->persons);
     for (int i=0;i<j;i++){
-        if (e.persons[i][1]==e.currentFloor){
-            L=insert(e.persons.pop(i), L);
+        if (e->persons->person->dest==e->currentFloor){
+            L=insert(e->persons->person, L);
+            e->persons->person=e->persons->next->person;
+            e->persons->next=e->persons->next->next;
+
         }
     }
     return L;
@@ -41,13 +46,28 @@ PersonList* exitElevator(Elevator *e){
 PersonList* enterElevator(Elevator *e, PersonList *list){
     int i=0;
      while (i<Profondeur(list)){
-        while (Profondeur(e.persons)<e.capacity){
-            insert(list.pop(i),e.persons);
+        while (Profondeur(e->persons)<e->capacity){
+            insert(list->person,e->persons);
+            list->person=list->next->person;
+            list->next=list->next->next;
         }
     }
     return list;
 }
 
 void stepElevator(Building *b){
-    b.elevator->targetFloor=scanf("%d");
+    if (b->elevator->currentFloor==b->elevator->targetFloor){
+        exitElevator(b->elevator);
+        enterElevator(b->elevator,b->waitingLists[b->elevator->currentFloor]);
+    }
+    else{
+        if (b->elevator->currentFloor<b->elevator->targetFloor){
+        b->elevator->currentFloor++;
+        }
+        else {
+            b->elevator->currentFloor--;
+
+        }
+    }
+
 }

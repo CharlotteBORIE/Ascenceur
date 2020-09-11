@@ -9,19 +9,20 @@ OBJ= main.o elevator.o person.o #intermédiare pour éviter de tout recompiler �
 
 #code 
 all: $(PROG)
+	./$(PROG)
 
-clean: rm -f *.o #nettoie tout
+clean: rm -f *.o #nettoie .o
 
 $(PROG): $(OBJ)
-	$(CC) -o $@ $(OBJ) $(LDFLAGS) 
-	#compile 
+	$(CC) -o  $(OBJ) $@ $(LDFLAGS) 
+#compile 
 
 #détail de OBJ
 
 main.o: main.c elevator.h
 	$(CC) $(CFlags) -o $@ -c $<
 
-person.o : person.c person .h
+person.o : person.c 
 	$(CC) $(CFlags) -o $@ -c $<
 
 elevator.o: elevator.c elevator.h person.h

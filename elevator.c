@@ -30,29 +30,36 @@ int Profondeur(PersonList *persons){
 }
 
 PersonList* exitElevator(Elevator *e){
-    PersonList* L=NULL;
-    int j=Profondeur(e->persons);
-    for (int i=0;i<j;i++){
-        if (e->persons->person->dest==e->currentFloor){
-            L=insert(e->persons->person, L);
-            e->persons->person=e->persons->next->person;
-            e->persons->next=e->persons->next->next;
-
+    PersonList* L=e->persons;
+    e->persons=NULL;
+    PersonList* L_exit=NULL;
+    int j=Profondeur(L);
+    int i=0;
+    while(i<j){
+        if (L->person->dest==e->currentFloor){
+            L_exit=insert(L->person, L_exit); 
         }
+        else{
+            e->persons=insert(L->person,e->persons);
+        }      
+        L=L->next;
+        i++;
+
     }
-    return L;
+    return L_exit;
 }
 
 PersonList* enterElevator(Elevator *e, PersonList *list){
     int i=0;
+    PersonList* L_enter=NULL;
      while (i<Profondeur(list)){
         while (Profondeur(e->persons)<e->capacity){
-            insert(list->person,e->persons);
-            list->person=list->next->person;
-            list->next=list->next->next;
+            L_enter=insert(list->person,L_enter);
+            e->persons=insert(list->person,e->persons);
+            list=list->next;
         }
     }
-    return list;
+    return L_enter;
 }
 
 void stepElevator(Building *b){

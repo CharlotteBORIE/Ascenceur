@@ -7,7 +7,7 @@ Elevator *create_elevator(int capacity, int currentFloor, PersonList *persons){
             e->capacity=capacity;
             e->currentFloor=currentFloor;
             e->persons=persons;
-            e->targetFloor=0;
+            // e->targetFloor=0;
             return e;
         }
 
@@ -29,13 +29,11 @@ int Profondeur(PersonList *persons){
     return j;
 }
 
-PersonList* exitElevator(Elevator *e){
+PersonList* exitElevator(Elevator *e){ //système FILO First in Last Out
     PersonList* L=e->persons;
     e->persons=NULL;
     PersonList* L_exit=NULL;
-    int j=Profondeur(L);
-    int i=0;
-    while(i<j){
+    while(L!=NULL){
         if (L->person->dest==e->currentFloor){
             L_exit=insert(L->person, L_exit); 
         }
@@ -43,29 +41,36 @@ PersonList* exitElevator(Elevator *e){
             e->persons=insert(L->person,e->persons);
         }      
         L=L->next;
-        i++;
-
     }
     return L_exit;
 }
 
 PersonList* enterElevator(Elevator *e, PersonList *list){
-    int i=0;
+
+    //calculer l'occupation de l'ascenceur
+    int occupation=0;
+    PersonList* p=e->persons;
+    while (p!=NULL){
+        occupation++;
+        p= p->next;
+    }
+
     PersonList* L_enter=NULL;
-     while (i<Profondeur(list)){
-        while (Profondeur(e->persons)<e->capacity){
+     while (list!=NULL){
+        while (occupation<e->capacity){
             L_enter=insert(list->person,L_enter);
             e->persons=insert(list->person,e->persons);
             list=list->next;
+            occupation++;
         }
     }
-    return L_enter;
+    return list;
 }
 
 void stepElevator(Building *b){
     if (b->elevator->currentFloor==b->elevator->targetFloor){
         exitElevator(b->elevator);
-        enterElevator(b->elevator,b->waitingLists[b->elevator->currentFloor]);
+        b->waitingLists[b->elevator->targetFloor]=enterElevator(b->elevator,b->waitingLists[b->elevator->currentFloor]);
     }
     else{
         if (b->elevator->currentFloor<b->elevator->targetFloor){
@@ -73,7 +78,6 @@ void stepElevator(Building *b){
         }
         else {
             b->elevator->currentFloor--;
-
         }
     }
 

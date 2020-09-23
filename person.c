@@ -12,7 +12,11 @@ Person* createPerson(int src, int dest){
 
 PersonList* insert(Person *p, PersonList *list){
     PersonList* L=(PersonList*)malloc(sizeof(PersonList));
-    L->person=p;
-    L->next=list;
+    if (list==NULL){
+        L->person=p;
+        return L;
+    }
+    L->person=list->person;
+    L->next=insert(p,list->next);
     return L;
 }

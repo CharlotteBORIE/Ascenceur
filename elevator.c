@@ -29,7 +29,7 @@ int Profondeur(PersonList *persons){
     return j;
 }
 
-PersonList* exitElevator(Elevator *e){ //système FILO First in Last Out
+PersonList* exitElevator(Elevator *e){ 
     PersonList* L=e->persons;
     e->persons=NULL;
     PersonList* L_exit=NULL;
@@ -42,6 +42,7 @@ PersonList* exitElevator(Elevator *e){ //système FILO First in Last Out
         }      
         L=L->next;
     }
+
     return L_exit;
 }
 
@@ -56,6 +57,8 @@ PersonList* enterElevator(Elevator *e, PersonList *list){
     }
 
     PersonList* L=list;
+
+
      while ((L!=NULL)&&(occupation<e->capacity)){
             if (L->person->dest!=e->currentFloor){ //pour si jamais une personne veut aller là où elle est déjà on la saute juste
             e->persons=insert(L->person,e->persons);
@@ -63,7 +66,7 @@ PersonList* enterElevator(Elevator *e, PersonList *list){
             }
             L= L->next;
         }
-    
+       
     return L;
 }
 

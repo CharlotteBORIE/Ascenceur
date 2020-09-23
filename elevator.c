@@ -55,16 +55,16 @@ PersonList* enterElevator(Elevator *e, PersonList *list){
         p= p->next;
     }
 
-    PersonList* L_enter=NULL;
-     while (list!=NULL){
-        while (occupation<e->capacity){
-            L_enter=insert(list->person,L_enter);
-            e->persons=insert(list->person,e->persons);
-            list=list->next;
+    PersonList* L=list;
+     while ((L!=NULL)&&(occupation<e->capacity)){
+            if (L->person->dest!=e->currentFloor){ //pour si jamais une personne veut aller là où elle est déjà on la saute juste
+            e->persons=insert(L->person,e->persons);
             occupation++;
+            }
+            L= L->next;
         }
-    }
-    return list;
+    
+    return L;
 }
 
 void stepElevator(Building *b){
